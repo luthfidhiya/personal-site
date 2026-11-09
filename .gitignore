@@ -23,8 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Mixamo source files: used to build public/models/ronin.glb; not redistributed
-assets-src/
 
 # Local-only
 *.tsbuildinfo
