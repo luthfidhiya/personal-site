@@ -1,355 +1,822 @@
 @import "tailwindcss";
 
-/* === Design Tokens === */
+/* === Design tokens (see DESIGN.md) ===
+   Ink and bone with one blood red. The illustrations use the same ink ramp (art/bits.tsx). */
 :root {
-  /* Light Mode */
-  --bg-primary: #f0e6d3;
-  --bg-card: #fff8e7;
-  --bg-card-alt: #fff0d0;
-  --text-primary: #2d3436;
-  --text-secondary: #636e72;
-  --pixel-shadow: #2d3436;
-  --border-color: #2d3436;
+  color-scheme: dark;
 
-  /* Shared Accents */
-  --accent-pink: #ff6b9d;
-  --accent-cyan: #4ecdc4;
-  --accent-yellow: #ffe66d;
-  --accent-green: #2ecc71;
+  --bg: #0c0a0d;
+  --bone: #ece3d3;
+  --ash: #a39a8c;
+  --red: #ef3b44;
+  --red-deep: #c8202a;
+  --red-press: #a8161f;
+  --blood: #8f141c;
+  --hair: rgb(236 227 211 / 0.16);
 
-  /* Footer Colors */
-  --footer-bg: #2d3436;
-  --footer-text: #f0e6d3;
+  --font-mincho: "Shippori Mincho B1", "Noto Serif JP", serif;
+  --font-body: "Outfit", system-ui, sans-serif;
 
-  --font-pixel: "Press Start 2P", cursive;
-  --font-body: "Outfit", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --menu-bar: 0px;
 }
 
-[data-theme="dark"] {
-  /* Dark Mode */
-  --bg-primary: #1a1a2e;
-  --bg-card: #16213e;
-  --bg-card-alt: #0f3460;
-  --text-primary: #eaeaea;
-  --text-secondary: #a0a0b0;
-  --pixel-shadow: #0a0a1a;
-  --border-color: #4a4a6a;
-
-  /* Shared Accents (slightly tweaked for dark) */
-  --accent-yellow: #ffd93d;
-
-  /* Footer Colors */
-  --footer-bg: #0a0a1a;
-  --footer-text: #eaeaea;
+@media (max-width: 767px) {
+  :root {
+    --menu-bar: calc(3.75rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
-/* === Base Reset === */
+/* === Base === */
 @layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
+    background-color: var(--bg);
+    color: var(--bone);
     font-family: var(--font-body);
     line-height: 1.6;
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  a,
+  button,
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--red-deep);
+    color: #fff;
   }
 }
 
-@layer utilities {
-  .font-pixel {
-    font-family: var(--font-pixel);
-  }
-  .font-mono {
-    font-family: var(--font-mono);
-  }
-  .font-body {
-    font-family: var(--font-body);
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-.page-load-animation {
-  animation: page-load 0.8s ease-out forwards;
-}
-
-@keyframes page-load {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* CRT scanline overlay */
-body::before {
-  content: "";
+.skip-link {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: repeating-linear-gradient(
-    transparent 0px,
-    transparent 1px,
-    rgba(0, 0, 0, 0.04) 2px,
-    rgba(0, 0, 0, 0.04) 3px
-  );
-  pointer-events: none;
-  z-index: 9999;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--bone);
+  color: var(--bg);
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.4;
+/* === Buttons: near-square corners, a blade edge rather than a pill === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.7rem 1.4rem;
+  border-radius: 2px;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
 }
-a {
-  text-decoration: none;
-  color: inherit;
+.btn:active {
+  transform: translateY(1px);
 }
-button {
-  font-family: var(--font-pixel);
-  cursor: pointer;
+.btn-red {
+  background: var(--red-deep);
+  color: #fff;
 }
-
-/* === Scrollbar === */
-::-webkit-scrollbar {
-  width: 12px;
+.btn-red:hover {
+  background: var(--red-press);
 }
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-  border-left: 2px solid var(--border-color);
+.btn-bone {
+  background: var(--bone);
+  color: var(--bg);
 }
-::-webkit-scrollbar-thumb {
-  background: var(--accent-pink);
-  border: 2px solid var(--border-color);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-cyan);
+.btn-bone:hover {
+  background: #fff;
+  color: var(--red-press);
 }
 
-/* === UI Utilities === */
-.pixel-border {
-  border: 4px solid var(--border-color);
-  box-shadow: 4px 4px 0px 0px var(--pixel-shadow);
-  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.3s ease;
+/* === Top bar === */
+.topnav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem var(--gutter);
+  background: linear-gradient(to bottom, rgb(8 6 7 / 0.85), rgb(8 6 7 / 0));
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  font-family: var(--font-mincho);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.brand-moon {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: var(--red-deep);
+}
+.brand:hover .brand-name {
+  color: var(--red);
+}
+.nav-list {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+}
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+.nav-kanji {
+  font-family: var(--font-mincho);
+  color: var(--red);
+}
+.nav-link:hover {
+  color: var(--red);
+}
+.nav-link:active {
+  transform: translateY(1px);
+}
+.nav-cta {
+  border-color: rgb(236 227 211 / 0.55);
+}
+.nav-cta:hover {
+  color: #fff;
+  background: var(--red-deep);
+  border-color: var(--red-deep);
+}
+.nav-cta:hover .nav-kanji {
+  color: #fff;
 }
 
-.pixel-border-sm {
-  border: 2px solid var(--border-color);
-  box-shadow: 2px 2px 0px 0px var(--pixel-shadow);
-  transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.3s ease;
-}
-
-.pixel-input {
-  width: 100%;
-  padding: 12px 16px;
-  font-family: var(--font-mono);
-  background-color: var(--bg-card-alt);
-  color: var(--text-primary);
-  border: 4px solid var(--border-color);
-  box-shadow: 4px 4px 0px 0px var(--pixel-shadow);
-  outline: none;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease;
-}
-.pixel-input:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 4px 4px 0px 0px var(--accent-cyan);
-}
-.pixel-input::placeholder {
-  color: var(--text-secondary);
-  opacity: 0.7;
-}
-
-/* === Animations === */
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
+@media (max-width: 767px) {
+  .topnav {
+    padding-block: 0.4rem;
   }
-  50% {
-    opacity: 0;
+  /* The stops move to a bar along the bottom, within thumb reach */
+  .topnav nav {
+    position: fixed;
+    inset: auto 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgb(10 8 9 / 0.94);
+    border-top: 1px solid var(--hair);
+  }
+  .nav-list {
+    justify-content: space-around;
+    gap: 0;
+  }
+  .nav-link {
+    flex-direction: column;
+    gap: 0;
+    min-height: 3.75rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    border: 0;
+  }
+  .nav-kanji {
+    font-size: 1.05rem;
   }
 }
 
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.6s ease-out forwards;
-}
-.animate-slide-down {
-  animation: slide-down 0.3s ease-out forwards;
-}
-.cursor.blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* === Scroll Reveal Utilities === */
-/* Base hidden state — apply to elements before they enter viewport */
-.reveal {
-  opacity: 0;
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-
-/* From below */
-.reveal-up {
-  transform: translateY(50px);
-}
-.reveal-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* From left */
-.reveal-left {
-  transform: translateX(-60px);
-}
-.reveal-left.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* From right */
-.reveal-right {
-  transform: translateX(60px);
-}
-.reveal-right.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Scale in */
-.reveal-scale {
-  transform: scale(0.8);
-}
-.reveal-scale.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Delay helpers */
-.delay-100 {
-  transition-delay: 0.1s;
-}
-.delay-200 {
-  transition-delay: 0.2s;
-}
-.delay-300 {
-  transition-delay: 0.3s;
-}
-.delay-400 {
-  transition-delay: 0.4s;
-}
-.delay-500 {
-  transition-delay: 0.5s;
-}
-
-/* === Navbar Utilities === */
-.navbar-links li::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--accent-pink);
-  transition: width 0.3s;
-}
-.navbar-links li:hover::after,
-.navbar-links li.active::after {
-  width: 100%;
-}
-
-/* === Loading Screen === */
-.loading-screen {
+/* === Atmosphere: embers and mist over the art, under the words === */
+.atmosphere {
   position: fixed;
   inset: 0;
-  z-index: 99999;
-  background-color: var(--bg-primary);
+  z-index: 5;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* === Shared type === */
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: var(--ash);
+  font-size: 0.95rem;
+}
+.kanji,
+.kicker > span[aria-hidden] {
+  font-family: var(--font-mincho);
+  color: var(--red);
+}
+.kicker .kanji {
+  font-size: 1.25rem;
+}
+
+/* === The peak (Hero.tsx drives --title-out, --heat, --stroke, --stroke-fade, --flash,
+   --gone and --split from scroll; usePointerParallax drives --mx / --my) === */
+.hero {
+  position: relative;
+  height: 300svh;
+}
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.hero-under {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 55%, #2a0a0f, var(--bg) 70%);
+}
+.half {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+/* Each layer drifts with the cursor by its depth; a little extra size hides the edges */
+.layer {
+  position: absolute;
+  inset: -4%;
+  transform: translate3d(calc(var(--mx, 0) * var(--depth) * -70px), calc(var(--my, 0) * var(--depth) * -26px), 0);
+}
+.layer img,
+.scene-layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The clip sits over the still painting and fades in once it is actually playing */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.hero-video.is-playing {
+  opacity: 1;
+}
+.hero-sky {
+  object-position: 60% 40%;
+  /* The night presses closer while he gathers himself */
+  scale: calc(1 + var(--tension, 0) * 0.06);
+}
+/* The sky reddens while he waits to cut */
+.hero-heat {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 66% 34%, rgb(239 59 68 / 0.4), rgb(239 59 68 / 0) 60%);
+  opacity: var(--heat, 0);
+  pointer-events: none;
+}
+.hero-copy {
+  position: absolute;
+  z-index: 10;
+  left: var(--gutter);
+  top: 50%;
+  max-width: min(38rem, 52vw);
+  transform: translateY(-48%);
+  opacity: calc(1 - var(--title-out, 0));
+  translate: 0 calc(var(--title-out, 0) * -10svh);
+  filter: blur(calc(var(--title-out, 0) * 6px));
+}
+.hero[data-past] .hero-copy {
+  visibility: hidden;
+}
+.hero-title {
+  margin: 0.35em 0 0.3em;
+  font-family: var(--font-mincho);
+  font-weight: 800;
+  font-size: clamp(3rem, 8.5vw, 7.5rem);
+  line-height: 0.95;
+}
+.hero-lede {
+  max-width: 28rem;
+  font-size: 1.1rem;
+  margin-bottom: 1.75rem;
+}
+.ronin-wrap {
+  position: absolute;
+  z-index: 8;
+  right: 5vw;
+  bottom: 0;
+  height: 84svh;
+  /* All six key frames share one box (assets cropped together), so they swap in place */
+  aspect-ratio: 822 / 1100;
+  opacity: calc(1 - var(--gone, 0));
+  translate: calc(var(--mx, 0) * -14px) calc(var(--gone, 0) * 8svh);
+  scale: calc(1 + var(--tension, 0) * 0.03);
+  transform-origin: 50% 100%;
+  /* Motion smear between key frames, strongest on the cut */
+  filter: blur(calc(var(--smear, 0) * 1px));
+  pointer-events: none;
+}
+/* His shadow on the ground, so he stands in the scene rather than on it */
+.ronin-wrap::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -2%;
+  height: 10%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0));
+}
+/* The aura: a red fire behind him that breathes slowly, and swells as he gathers himself */
+.ronin-aura {
+  position: absolute;
+  inset: -6% -18% 8%;
+  background:
+    radial-gradient(ellipse 34% 40% at 54% 42%, rgb(255 70 70 / 0.75), rgb(200 20 30 / 0) 70%),
+    radial-gradient(ellipse 48% 56% at 54% 46%, rgb(160 10 20 / 0.6), rgb(60 0 8 / 0) 72%);
+  filter: blur(26px);
+  opacity: calc(0.45 + var(--tension, 0) * 0.55);
+  scale: calc(1 + var(--tension, 0) * 0.18);
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ronin-aura {
+    animation: aura 3.4s ease-in-out infinite alternate;
+  }
+}
+html[data-motion="off"] .ronin-aura {
+  animation-play-state: paused;
+}
+@keyframes aura {
+  from {
+    transform: scale(0.94, 0.97);
+    filter: blur(26px) brightness(0.85);
+  }
+  to {
+    transform: scale(1.06, 1.04);
+    filter: blur(30px) brightness(1.15);
+  }
+}
+.ronin-pose {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Deeper in shadow than the bright painting, with a hard red rim and an outer glow */
+  filter: brightness(0.78) contrast(1.12) saturate(1.05)
+    drop-shadow(-2px 0 0 rgb(255 70 70 / 0.85)) drop-shadow(2px 0 0 rgb(255 70 70 / 0.45))
+    drop-shadow(0 0 calc(10px + var(--tension, 0) * 22px) rgb(239 59 68 / 0.55));
+}
+.slash {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  width: 100%;
+  height: 100%;
+  opacity: var(--stroke-fade, 1);
+  pointer-events: none;
+}
+.slash path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: calc(1 - var(--stroke, 0));
+}
+.slash-glow {
+  stroke: rgb(239 59 68 / 0.55);
+  stroke-width: 16;
+  filter: blur(6px);
+}
+.slash-core {
+  stroke: #fff3ea;
+  stroke-width: 3;
+}
+.hero-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  background: #ffe9e0;
+  opacity: calc(var(--flash, 0) * 0.5);
+  pointer-events: none;
+}
+
+/* Reduced motion: one still frame, the ronin at rest, nothing pinned or cut */
+.hero[data-static] {
+  height: 100svh;
+}
+.hero[data-static] .half + .half,
+.hero[data-static] .slash,
+.hero[data-static] .hero-flash {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .ronin-wrap {
+    height: 64svh;
+    right: -2vw;
+  }
+}
+@media (max-width: 767px) {
+  .hero-copy {
+    top: 4.5rem;
+    right: var(--gutter);
+    max-width: none;
+    transform: none;
+  }
+  .hero-title {
+    font-size: clamp(2.75rem, 14vw, 4rem);
+  }
+  .hero-lede {
+    font-size: 1rem;
+    max-width: 20rem;
+  }
+  .ronin-wrap {
+    height: 50svh;
+    right: -6vw;
+    bottom: var(--menu-bar);
+  }
+}
+
+/* === Scenes below the peak === */
+.scene {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: center;
+  /* About one screen: any taller and the 16:9 paintings get cropped too hard */
+  min-height: 100svh;
+  padding-block: 14svh;
+  overflow: clip;
+}
+.scene-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.scene-layer {
+  position: absolute;
+  inset: -7% 0;
+}
+/* The living version of the painting, over the still one; it fades in once it is drawing */
+.living {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.living[data-live] {
+  opacity: 1;
+}
+/* Ink at both edges joins each scene to the next */
+.scene-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--bg), rgb(12 10 13 / 0) 16%, rgb(12 10 13 / 0) 84%, var(--bg));
+}
+.scene-copy {
+  position: relative;
+  z-index: 10;
+  width: min(34rem, 100% - 2 * var(--gutter));
+  margin-inline: var(--gutter);
+}
+/* A pool of shadow behind the words keeps them readable wherever the art is light */
+.scene-copy::before {
+  content: "";
+  position: absolute;
+  inset: -18% -22%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(8 6 7 / 0.85), rgb(8 6 7 / 0.55) 60%, rgb(8 6 7 / 0));
+}
+.scene-title {
+  margin: 0.2em 0 0.35em;
+  font-family: var(--font-mincho);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 7vw, 5.75rem);
+  line-height: 1;
+}
+.scene-lead {
+  font-size: 1.12rem;
+}
+.scene-note {
+  margin-top: 1rem;
+  color: var(--ash);
+}
+
+/* About: the words on the right, the falls on the left */
+@media (min-width: 900px) {
+  /* The words take the empty sky at the top right; the ronin kneels below them */
+  .scene-about {
+    align-content: start;
+  }
+  .about-copy {
+    margin-left: auto;
+    margin-right: max(var(--gutter), 5vw);
+  }
+  .arsenal-copy,
+  .contact-copy {
+    margin-left: max(var(--gutter), 7vw);
+  }
+}
+.trait-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0;
+  margin-top: 1.5rem;
+  list-style: none;
+  font-family: var(--font-mincho);
+  font-size: 1.1rem;
+}
+.trait-list li + li::before {
+  content: "/";
+  margin-inline: 0.7rem;
+  color: var(--red);
+}
+
+/* Arsenal: tools on a rack, two to a row */
+.arsenal-copy {
+  width: min(40rem, 100% - 2 * var(--gutter));
+}
+.skill-rack {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  column-gap: 2rem;
+  margin-top: 1.75rem;
+  list-style: none;
+  border-top: 1px solid var(--hair);
+}
+.skill-rack li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+/* Brand logos in one tone so twelve brand colours don't break the palette */
+.skill-rack .skill-icon,
+.skill-rack .skill-icon.colored {
+  color: var(--ash);
+  font-size: 1.3rem;
+}
+
+/* Work: the hand of cards */
+.scene-work {
+  align-content: start;
+}
+.hand {
+  position: relative;
+  z-index: 10;
+  margin-top: 2.5rem;
+  padding-inline: var(--gutter);
+}
+.hand-cards {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  perspective: 1400px;
 }
-
-.loading-screen.loading-done {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+.card {
+  border-radius: 6px;
 }
-
-.loading-content {
+.card-side {
+  flex: none;
+  width: clamp(8rem, 13vw, 11rem);
+  padding: 0;
+  border: 0;
+  background: none;
+  transition: transform 0.25s, filter 0.25s;
+  filter: brightness(0.8);
+}
+.card-side:first-child {
+  transform: rotate(-4deg);
+}
+.card-side:last-child {
+  transform: rotate(4deg);
+}
+.card-side:hover,
+.card-side:focus-visible {
+  filter: brightness(1.1);
+  transform: translateY(-8px) rotate(0deg);
+}
+.card-side:active {
+  transform: translateY(-4px) scale(0.98);
+}
+.card-back-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.card-face {
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
+  width: min(25rem, 100%);
+  min-height: 30rem;
+  padding: 2rem 1.75rem 1.75rem;
+  background: linear-gradient(to bottom, #1b0d11, #100a0c);
+  border: 2px solid var(--blood);
+  outline: 1px solid #3a1219;
+  outline-offset: -10px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card-face {
+    animation: card-turn 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+@keyframes card-turn {
+  from {
+    transform: rotateY(-90deg);
+    opacity: 0.4;
+  }
+}
+.card-num {
+  color: var(--ash);
+  font-size: 0.9rem;
+}
+.card-title {
+  font-family: var(--font-mincho);
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+.card-tags {
+  color: var(--ash);
+}
+.card-face .btn,
+.card-soon {
+  margin-top: auto;
+}
+.card-soon {
+  font-family: var(--font-mincho);
+  font-size: 1.1rem;
+}
+.hand-controls {
+  display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.hand-step {
+  min-height: 44px;
+  padding: 0 1rem;
+  color: var(--bone);
+  font: inherit;
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.hand-step:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+.hand-step:active {
+  transform: translateY(1px);
+}
+.hand-dots {
+  display: flex;
+  list-style: none;
+}
+.hand-dot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.hand-dot::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 3px;
+  translate: -50% -50%;
+  background: rgb(236 227 211 / 0.35);
+  transition: width 0.2s, background-color 0.2s;
+}
+.hand-dot:hover::before {
+  background: var(--bone);
+}
+.hand-dot[aria-current="true"]::before {
+  width: 32px;
+  background: var(--red);
+}
+.work-empty {
+  position: relative;
+  z-index: 10;
+  margin: 2rem var(--gutter) 0;
+  font-family: var(--font-mincho);
+  font-size: 1.3rem;
+}
+@media (max-width: 767px) {
+  .card-side {
+    display: none;
+  }
+  .hand-dot {
+    width: 36px;
+  }
 }
 
-.loading-bar-container {
-  width: 200px;
-  height: 16px;
-  border: 3px solid var(--border-color);
-  background: var(--bg-card);
+/* Contact: the words before the gate, the footer on the ground */
+.scene-contact {
+  min-height: 120svh;
+  padding-bottom: 0;
+  grid-template-rows: 1fr auto;
+}
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+.contact-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.contact-list a:hover {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+.contact-soon {
+  margin-top: 1.5rem;
+  font-family: var(--font-mincho);
+  font-size: 1.3rem;
+}
+.site-footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 2rem;
+  margin-top: 16svh;
+  padding: 1rem var(--gutter) calc(1rem + var(--menu-bar));
+  font-size: 0.9rem;
+  background: linear-gradient(to top, var(--bg) 50%, rgb(12 10 13 / 0));
 }
 
-.loading-bar {
-  height: 100%;
-  width: 0%;
-  background: var(--accent-pink);
-  animation: load-progress 1.5s ease-in-out forwards;
+/* The footer's control for everything that moves on its own */
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0;
+  color: var(--bone);
+  font: inherit;
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-
-@keyframes load-progress {
-  0% { width: 0%; }
-  30% { width: 30%; }
-  60% { width: 65%; }
-  80% { width: 85%; }
-  100% { width: 100%; }
+.motion-toggle:hover {
+  color: var(--red);
+}
+.motion-toggle:active {
+  transform: translateY(1px);
+}
+.motion-glyph {
+  width: 9px;
+  height: 10px;
+  border-inline: 3px solid currentColor;
+}
+.motion-glyph[data-paused="true"] {
+  border: 0;
+  border-block: 5px solid transparent;
+  border-left: 9px solid currentColor;
 }
