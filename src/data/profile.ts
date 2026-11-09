@@ -10,6 +10,8 @@ export const profile = {
   handle: "Lytcher.dev",
   role: "Fullstack Web Developer",
   location: "Yogyakarta, Indonesia",
+  // [TEMPLATE] replace with your own line
+  tagline: "I build web apps end to end, from the database to the last pixel.",
 };
 
 // TODO: fill in real addresses. Only entries listed here are shown on the page.

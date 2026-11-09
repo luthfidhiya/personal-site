@@ -1,822 +1,574 @@
 @import "tailwindcss";
 
 /* === Design tokens (see DESIGN.md) ===
-   Ink and bone with one blood red. The illustrations use the same ink ramp (art/bits.tsx). */
+   Shadow first; red is the only light. */
+@theme {
+  --color-void: #050405;
+  --color-shadow: #0e0a0c;
+  --color-blood: #c4121c;
+  --color-glow: #ff3b30;
+  --color-paper: #e6ddd0;
+  --color-smoke: #8f877c;
+
+  --font-display: "Zen Antique", serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+}
+
 :root {
   color-scheme: dark;
-
-  --bg: #0c0a0d;
-  --bone: #ece3d3;
-  --ash: #a39a8c;
-  --red: #ef3b44;
-  --red-deep: #c8202a;
-  --red-press: #a8161f;
-  --blood: #8f141c;
-  --hair: rgb(236 227 211 / 0.16);
-
-  --font-mincho: "Shippori Mincho B1", "Noto Serif JP", serif;
-  --font-body: "Outfit", system-ui, sans-serif;
-
-  --gutter: clamp(1rem, 4vw, 3rem);
-  --menu-bar: 0px;
 }
 
-@media (max-width: 767px) {
-  :root {
-    --menu-bar: calc(3.75rem + env(safe-area-inset-bottom, 0px));
-  }
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-paper);
+  font-family: var(--font-body);
 }
 
-/* === Base === */
-@layer base {
-  body {
-    background-color: var(--bg);
-    color: var(--bone);
-    font-family: var(--font-body);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  a,
-  button,
-  summary,
-  label[for] {
-    cursor: pointer;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--red);
-    outline-offset: 3px;
-  }
-
-  ::selection {
-    background: var(--red-deep);
-    color: #fff;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-.skip-link {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 100;
-  padding: 0.6rem 1rem;
-  background: var(--bone);
-  color: var(--bg);
-  transform: translateY(-200%);
-}
-.skip-link:focus-visible {
-  transform: none;
-}
-
-/* === Buttons: near-square corners, a blade edge rather than a pill === */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0.7rem 1.4rem;
-  border-radius: 2px;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
-}
-.btn:active {
-  transform: translateY(1px);
-}
-.btn-red {
-  background: var(--red-deep);
-  color: #fff;
-}
-.btn-red:hover {
-  background: var(--red-press);
-}
-.btn-bone {
-  background: var(--bone);
-  color: var(--bg);
-}
-.btn-bone:hover {
-  background: #fff;
-  color: var(--red-press);
+a {
+  color: inherit;
 }
 
 /* === Top bar === */
-.topnav {
+.topbar {
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.6rem var(--gutter);
-  background: linear-gradient(to bottom, rgb(8 6 7 / 0.85), rgb(8 6 7 / 0));
+  padding: 1.25rem clamp(1rem, 4vw, 3rem);
 }
-.brand {
+.topnav {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.topnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  text-decoration: none;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.9);
+}
+.topnav a:hover {
+  color: var(--color-glow);
+}
+.topnav a:focus-visible {
+  outline: 2px solid var(--color-glow);
+  outline-offset: 4px;
+}
+.mark {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   min-height: 44px;
-  font-family: var(--font-mincho);
-  font-weight: 700;
-  font-size: 1.15rem;
-}
-.brand-moon {
-  width: 0.9rem;
-  height: 0.9rem;
-  border-radius: 50%;
-  background: var(--red-deep);
-}
-.brand:hover .brand-name {
-  color: var(--red);
-}
-.nav-list {
-  display: flex;
-  gap: 0.25rem;
-  list-style: none;
-}
-.nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0 0.85rem;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
-}
-.nav-kanji {
-  font-family: var(--font-mincho);
-  color: var(--red);
-}
-.nav-link:hover {
-  color: var(--red);
-}
-.nav-link:active {
-  transform: translateY(1px);
-}
-.nav-cta {
-  border-color: rgb(236 227 211 / 0.55);
-}
-.nav-cta:hover {
-  color: #fff;
-  background: var(--red-deep);
-  border-color: var(--red-deep);
-}
-.nav-cta:hover .nav-kanji {
-  color: #fff;
-}
-
-@media (max-width: 767px) {
-  .topnav {
-    padding-block: 0.4rem;
-  }
-  /* The stops move to a bar along the bottom, within thumb reach */
-  .topnav nav {
-    position: fixed;
-    inset: auto 0 0;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: rgb(10 8 9 / 0.94);
-    border-top: 1px solid var(--hair);
-  }
-  .nav-list {
-    justify-content: space-around;
-    gap: 0;
-  }
-  .nav-link {
-    flex-direction: column;
-    gap: 0;
-    min-height: 3.75rem;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.8rem;
-    line-height: 1.2;
-    border: 0;
-  }
-  .nav-kanji {
-    font-size: 1.05rem;
-  }
-}
-
-/* === Atmosphere: embers and mist over the art, under the words === */
-.atmosphere {
-  position: fixed;
-  inset: 0;
-  z-index: 5;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-}
-
-/* === Shared type === */
-.kicker {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
-  color: var(--ash);
-  font-size: 0.95rem;
-}
-.kanji,
-.kicker > span[aria-hidden] {
-  font-family: var(--font-mincho);
-  color: var(--red);
-}
-.kicker .kanji {
+  font-family: var(--font-display);
   font-size: 1.25rem;
+  text-decoration: none;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.9);
+}
+.mark-moon {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--color-blood);
+  box-shadow: 0 0 12px var(--color-glow);
+}
+.mark:focus-visible {
+  outline: 2px solid var(--color-glow);
+  outline-offset: 4px;
 }
 
-/* === The peak (Hero.tsx drives --title-out, --heat, --stroke, --stroke-fade, --flash,
-   --gone and --split from scroll; usePointerParallax drives --mx / --my) === */
+/* === Hero: the peak ===
+   Pinned for 160svh of scroll. Layers back to front; JS moves them with `translate`,
+   so idle motion uses `transform` and the two never fight. */
 .hero {
   position: relative;
-  height: 300svh;
+  height: 260svh;
 }
 .hero-stage {
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
+  isolation: isolate;
 }
-.hero-under {
+.hero-stage > * {
   position: absolute;
+  pointer-events: none;
+}
+/* Layers are wider than the screen on purpose */
+.hero-stage img {
+  max-width: none;
+}
+/* The sky is light, so it is made here, not painted: black, warmed toward the moon */
+.hero-sky {
   inset: 0;
-  background: radial-gradient(ellipse at 50% 55%, #2a0a0f, var(--bg) 70%);
+  background:
+    radial-gradient(circle at 30% 26%, rgb(196 18 28 / 0.42), rgb(90 8 14 / 0.18) 28%, transparent 58%),
+    linear-gradient(to bottom, #0c0607, var(--color-void) 70%);
 }
-.half {
+.hero-moon {
+  left: 15vw;
+  top: 6svh;
+  width: min(30vw, 50svh);
+  aspect-ratio: 1;
+}
+.hero-moon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: circle(49.5%);
+}
+/* Its glow, breathing slowly */
+.hero-moon::before {
+  content: "";
   position: absolute;
+  inset: -45%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 59 48 / 0.5), rgb(196 18 28 / 0.18) 55%, transparent);
+  animation: breathe 7s ease-in-out infinite;
+}
+.hero-cloud-2 {
+  left: -4vw;
+  top: 16svh;
+  width: 78vw;
+  animation: drift 40s ease-in-out infinite alternate;
+}
+.hero-cloud-1 {
+  right: -12vw;
+  top: 30svh;
+  width: 86vw;
+  animation: drift 55s ease-in-out infinite alternate-reverse;
+}
+.hero-ridge-far {
+  left: 0;
+  bottom: 22svh;
+  width: 100%;
+}
+/* The same range again, mirrored and darker, as the middle distance */
+.hero-ridge-mid {
+  left: -8%;
+  bottom: 10svh;
+  width: 116%;
+  transform: scaleX(-1);
+  filter: brightness(0.5);
+}
+.hero-mist {
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, transparent, rgb(60 8 12 / 0.55) 45%, transparent);
+  animation: drift 30s ease-in-out infinite alternate;
+}
+.hero-mist-far {
+  bottom: 18svh;
+  height: 22svh;
+}
+.hero-mist-near {
+  bottom: 4svh;
+  height: 20svh;
+  background: linear-gradient(to bottom, transparent, rgb(40 6 9 / 0.7) 50%, transparent);
+}
+.hero-samurai {
   inset: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
-/* Each layer drifts with the cursor by its depth; a little extra size hides the edges */
-.layer {
-  position: absolute;
-  inset: -4%;
-  transform: translate3d(calc(var(--mx, 0) * var(--depth) * -70px), calc(var(--my, 0) * var(--depth) * -26px), 0);
+.hero-ridge-near {
+  left: -5%;
+  bottom: -12svh;
+  width: 110%;
 }
-.layer img,
-.scene-layer img {
+.hero-ridge-near img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
-/* The clip sits over the still painting and fades in once it is actually playing */
-.hero-video {
+.hero-ridge-near::after {
+  content: "";
   position: absolute;
-  inset: 0;
+  top: calc(100% - 2px);
+  left: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+  height: 60svh;
+  background: #080202;
 }
-.hero-video.is-playing {
-  opacity: 1;
-}
-.hero-sky {
-  object-position: 60% 40%;
-  /* The night presses closer while he gathers himself */
-  scale: calc(1 + var(--tension, 0) * 0.06);
-}
-/* The sky reddens while he waits to cut */
-.hero-heat {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 66% 34%, rgb(239 59 68 / 0.4), rgb(239 59 68 / 0) 60%);
-  opacity: var(--heat, 0);
-  pointer-events: none;
+.hero-branch {
+  left: -7vw;
+  top: -12svh;
+  width: 40vw;
+  filter: blur(1.5px);
 }
 .hero-copy {
   position: absolute;
-  z-index: 10;
-  left: var(--gutter);
-  top: 50%;
-  max-width: min(38rem, 52vw);
-  transform: translateY(-48%);
-  opacity: calc(1 - var(--title-out, 0));
-  translate: 0 calc(var(--title-out, 0) * -10svh);
-  filter: blur(calc(var(--title-out, 0) * 6px));
+  left: clamp(1rem, 6vw, 6rem);
+  top: 34svh;
+  width: min(36rem, 100% - 2rem);
+  pointer-events: auto;
 }
-.hero[data-past] .hero-copy {
-  visibility: hidden;
+.hero-kicker {
+  margin: 0 0 1rem;
+  color: var(--color-smoke);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
 }
 .hero-title {
-  margin: 0.35em 0 0.3em;
-  font-family: var(--font-mincho);
-  font-weight: 800;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: clamp(3rem, 8.5vw, 7.5rem);
   line-height: 0.95;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.8);
 }
 .hero-lede {
+  margin: 1.25rem 0 0;
   max-width: 28rem;
-  font-size: 1.1rem;
-  margin-bottom: 1.75rem;
-}
-.ronin-wrap {
-  position: absolute;
-  z-index: 8;
-  right: 5vw;
-  bottom: 0;
-  height: 84svh;
-  /* All six key frames share one box (assets cropped together), so they swap in place */
-  aspect-ratio: 822 / 1100;
-  opacity: calc(1 - var(--gone, 0));
-  translate: calc(var(--mx, 0) * -14px) calc(var(--gone, 0) * 8svh);
-  scale: calc(1 + var(--tension, 0) * 0.03);
-  transform-origin: 50% 100%;
-  /* Motion smear between key frames, strongest on the cut */
-  filter: blur(calc(var(--smear, 0) * 1px));
-  pointer-events: none;
-}
-/* His shadow on the ground, so he stands in the scene rather than on it */
-.ronin-wrap::after {
-  content: "";
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: -2%;
-  height: 10%;
-  z-index: -1;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0));
-}
-/* The aura: a red fire behind him that breathes slowly, and swells as he gathers himself */
-.ronin-aura {
-  position: absolute;
-  inset: -6% -18% 8%;
-  background:
-    radial-gradient(ellipse 34% 40% at 54% 42%, rgb(255 70 70 / 0.75), rgb(200 20 30 / 0) 70%),
-    radial-gradient(ellipse 48% 56% at 54% 46%, rgb(160 10 20 / 0.6), rgb(60 0 8 / 0) 72%);
-  filter: blur(26px);
-  opacity: calc(0.45 + var(--tension, 0) * 0.55);
-  scale: calc(1 + var(--tension, 0) * 0.18);
-  mix-blend-mode: screen;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .ronin-aura {
-    animation: aura 3.4s ease-in-out infinite alternate;
-  }
-}
-html[data-motion="off"] .ronin-aura {
-  animation-play-state: paused;
-}
-@keyframes aura {
-  from {
-    transform: scale(0.94, 0.97);
-    filter: blur(26px) brightness(0.85);
-  }
-  to {
-    transform: scale(1.06, 1.04);
-    filter: blur(30px) brightness(1.15);
-  }
-}
-.ronin-pose {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  /* Deeper in shadow than the bright painting, with a hard red rim and an outer glow */
-  filter: brightness(0.78) contrast(1.12) saturate(1.05)
-    drop-shadow(-2px 0 0 rgb(255 70 70 / 0.85)) drop-shadow(2px 0 0 rgb(255 70 70 / 0.45))
-    drop-shadow(0 0 calc(10px + var(--tension, 0) * 22px) rgb(239 59 68 / 0.55));
-}
-.slash {
-  position: absolute;
-  inset: 0;
-  z-index: 9;
-  width: 100%;
-  height: 100%;
-  opacity: var(--stroke-fade, 1);
-  pointer-events: none;
-}
-.slash path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: calc(1 - var(--stroke, 0));
-}
-.slash-glow {
-  stroke: rgb(239 59 68 / 0.55);
-  stroke-width: 16;
-  filter: blur(6px);
-}
-.slash-core {
-  stroke: #fff3ea;
-  stroke-width: 3;
-}
-.hero-flash {
-  position: absolute;
-  inset: 0;
-  z-index: 11;
-  background: #ffe9e0;
-  opacity: calc(var(--flash, 0) * 0.5);
-  pointer-events: none;
+  font-size: 1.125rem;
+  line-height: 1.55;
 }
 
-/* Reduced motion: one still frame, the ronin at rest, nothing pinned or cut */
-.hero[data-static] {
-  height: 100svh;
-}
-.hero[data-static] .half + .half,
-.hero[data-static] .slash,
-.hero[data-static] .hero-flash {
-  display: none;
-}
-
-@media (max-width: 1023px) {
-  .ronin-wrap {
-    height: 64svh;
-    right: -2vw;
-  }
-}
+/* On a tall screen the wide layers are sized by height instead, so the range still fills it */
 @media (max-width: 767px) {
+  .hero-moon {
+    left: 30vw;
+    width: 62vw;
+  }
+  .hero-cloud-2 {
+    left: -40vw;
+    width: 190vw;
+  }
+  .hero-cloud-1 {
+    right: -60vw;
+    width: 210vw;
+  }
+  .hero-ridge-far {
+    left: -70vw;
+    width: 260vw;
+  }
+  .hero-ridge-mid {
+    left: -90vw;
+    width: 280vw;
+  }
+  .hero-ridge-near {
+    left: -60vw;
+    bottom: -6svh;
+    width: 240vw;
+  }
+  .hero-branch {
+    width: 80vw;
+  }
   .hero-copy {
-    top: 4.5rem;
-    right: var(--gutter);
-    max-width: none;
-    transform: none;
-  }
-  .hero-title {
-    font-size: clamp(2.75rem, 14vw, 4rem);
-  }
-  .hero-lede {
-    font-size: 1rem;
-    max-width: 20rem;
-  }
-  .ronin-wrap {
-    height: 50svh;
-    right: -6vw;
-    bottom: var(--menu-bar);
+    top: 16svh;
   }
 }
 
-/* === Scenes below the peak === */
-.scene {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  align-content: center;
-  /* About one screen: any taller and the 16:9 paintings get cropped too hard */
-  min-height: 100svh;
-  padding-block: 14svh;
-  overflow: clip;
-}
-.scene-art {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-.scene-layer {
-  position: absolute;
-  inset: -7% 0;
-}
-/* The living version of the painting, over the still one; it fades in once it is drawing */
-.living {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-.living[data-live] {
-  opacity: 1;
-}
-/* Ink at both edges joins each scene to the next */
-.scene-art::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, var(--bg), rgb(12 10 13 / 0) 16%, rgb(12 10 13 / 0) 84%, var(--bg));
-}
-.scene-copy {
-  position: relative;
-  z-index: 10;
-  width: min(34rem, 100% - 2 * var(--gutter));
-  margin-inline: var(--gutter);
-}
-/* A pool of shadow behind the words keeps them readable wherever the art is light */
-.scene-copy::before {
-  content: "";
-  position: absolute;
-  inset: -18% -22%;
-  z-index: -1;
-  background: radial-gradient(closest-side, rgb(8 6 7 / 0.85), rgb(8 6 7 / 0.55) 60%, rgb(8 6 7 / 0));
-}
-.scene-title {
-  margin: 0.2em 0 0.35em;
-  font-family: var(--font-mincho);
-  font-weight: 800;
-  font-size: clamp(2.75rem, 7vw, 5.75rem);
-  line-height: 1;
-}
-.scene-lead {
-  font-size: 1.12rem;
-}
-.scene-note {
-  margin-top: 1rem;
-  color: var(--ash);
-}
-
-/* About: the words on the right, the falls on the left */
-@media (min-width: 900px) {
-  /* The words take the empty sky at the top right; the ronin kneels below them */
-  .scene-about {
-    align-content: start;
-  }
-  .about-copy {
-    margin-left: auto;
-    margin-right: max(var(--gutter), 5vw);
-  }
-  .arsenal-copy,
-  .contact-copy {
-    margin-left: max(var(--gutter), 7vw);
+@keyframes breathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.94);
   }
 }
-.trait-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 0;
-  margin-top: 1.5rem;
-  list-style: none;
-  font-family: var(--font-mincho);
-  font-size: 1.1rem;
-}
-.trait-list li + li::before {
-  content: "/";
-  margin-inline: 0.7rem;
-  color: var(--red);
+@keyframes drift {
+  to {
+    transform: translateX(3vw);
+  }
 }
 
-/* Arsenal: tools on a rack, two to a row */
-.arsenal-copy {
-  width: min(40rem, 100% - 2 * var(--gutter));
-}
-.skill-rack {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-  column-gap: 2rem;
-  margin-top: 1.75rem;
-  list-style: none;
-  border-top: 1px solid var(--hair);
-}
-.skill-rack li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--hair);
-}
-/* Brand logos in one tone so twelve brand colours don't break the palette */
-.skill-rack .skill-icon,
-.skill-rack .skill-icon.colored {
-  color: var(--ash);
-  font-size: 1.3rem;
+/* Reduced motion: nothing pinned, nothing drifting; the scene is its first frame */
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    height: 100svh;
+  }
+  .hero-stage *,
+  .hero-stage *::before {
+    animation: none !important;
+  }
 }
 
-/* Work: the hand of cards */
-.scene-work {
-  align-content: start;
-}
-.hand {
-  position: relative;
-  z-index: 10;
-  margin-top: 2.5rem;
-  padding-inline: var(--gutter);
-}
-.hand-cards {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  perspective: 1400px;
-}
-.card {
-  border-radius: 6px;
-}
-.card-side {
-  flex: none;
-  width: clamp(8rem, 13vw, 11rem);
-  padding: 0;
-  border: 0;
-  background: none;
-  transition: transform 0.25s, filter 0.25s;
-  filter: brightness(0.8);
-}
-.card-side:first-child {
-  transform: rotate(-4deg);
-}
-.card-side:last-child {
-  transform: rotate(4deg);
-}
-.card-side:hover,
-.card-side:focus-visible {
-  filter: brightness(1.1);
-  transform: translateY(-8px) rotate(0deg);
-}
-.card-side:active {
-  transform: translateY(-4px) scale(0.98);
-}
-.card-back-art {
-  display: block;
-  width: 100%;
+/* Lenis (smooth scroll) expects these */
+html.lenis,
+html.lenis body {
   height: auto;
 }
-.card-face {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: min(25rem, 100%);
-  min-height: 30rem;
-  padding: 2rem 1.75rem 1.75rem;
-  background: linear-gradient(to bottom, #1b0d11, #100a0c);
-  border: 2px solid var(--blood);
-  outline: 1px solid #3a1219;
-  outline-offset: -10px;
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .card-face {
-    animation: card-turn 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-}
-@keyframes card-turn {
-  from {
-    transform: rotateY(-90deg);
-    opacity: 0.4;
-  }
-}
-.card-num {
-  color: var(--ash);
-  font-size: 0.9rem;
-}
-.card-title {
-  font-family: var(--font-mincho);
-  font-weight: 800;
-  font-size: 2rem;
-  line-height: 1.1;
-}
-.card-tags {
-  color: var(--ash);
-}
-.card-face .btn,
-.card-soon {
-  margin-top: auto;
-}
-.card-soon {
-  font-family: var(--font-mincho);
-  font-size: 1.1rem;
-}
-.hand-controls {
+
+/* === Shared scene type === */
+.kicker {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  color: var(--color-smoke);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
 }
-.hand-step {
-  min-height: 44px;
-  padding: 0 1rem;
-  color: var(--bone);
-  font: inherit;
-  background: transparent;
-  border: 1px solid var(--hair);
-  border-radius: 2px;
-  transition: color 0.2s, border-color 0.2s;
+.kicker-kanji {
+  color: var(--color-glow);
+  font-family: var(--font-display);
 }
-.hand-step:hover {
-  color: var(--red);
-  border-color: var(--red);
+.scene-title {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  line-height: 1;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.8);
 }
-.hand-step:active {
-  transform: translateY(1px);
-}
-.hand-dots {
-  display: flex;
-  list-style: none;
-}
-.hand-dot {
+
+/* === About: the falls ===
+   Rises 25svh over the end of the hero; its top is the hero's ground colour for a short
+   stretch only, and the cliff starts right below it, so no empty band opens between. */
+.about {
   position: relative;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  background: none;
-  border: 0;
+  z-index: 1;
+  display: grid;
+  align-items: center;
+  min-height: 130svh;
+  margin-top: -25svh;
+  padding-block: 25svh 22svh;
+  overflow: clip;
+  isolation: isolate;
 }
-.hand-dot::before {
-  content: "";
+.about-scene {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 20px;
-  height: 3px;
-  translate: -50% -50%;
-  background: rgb(236 227 211 / 0.35);
-  transition: width 0.2s, background-color 0.2s;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 }
-.hand-dot:hover::before {
-  background: var(--bone);
+.about-scene > * {
+  position: absolute;
+  max-width: none;
 }
-.hand-dot[aria-current="true"]::before {
-  width: 32px;
-  background: var(--red);
+.about-sky {
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 22% 52%, rgb(196 18 28 / 0.22), transparent 70%),
+    linear-gradient(to bottom, rgb(8 2 2 / 0) 0%, #080202 18%, #0b0506 34%, var(--color-void) 100%);
 }
-.work-empty {
-  position: relative;
-  z-index: 10;
-  margin: 2rem var(--gutter) 0;
-  font-family: var(--font-mincho);
-  font-size: 1.3rem;
+/* Box in the cliff painting's proportions; the cleft is measured on the painting.
+   It starts at the very top, over the hero's ground, so the cliff is already rising
+   while the peak is still on screen. */
+.about-cliffbox {
+  --box-w: 70vw;
+  left: -6vw;
+  top: 2%;
+  width: var(--box-w);
+  /* The painting's top is a straight cut; it rises out of the dark instead */
+  mask-image: linear-gradient(to bottom, transparent, #000 30%);
+  aspect-ratio: 2224 / 1536;
 }
+.about-cliff {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* The water: its painting scrolls down inside itself, so it falls without stopping.
+   The cleft is painted near black, so `screen` lays the water over it and nowhere else. */
+.about-falls {
+  position: absolute;
+  left: 27.5%;
+  width: 8%;
+  top: 4%;
+  bottom: -6%;
+  /* One tile of the looped strip is as tall as the box is wide (8% wide, 12.5:1) */
+  background: url("/art/about/falls-960.webp") center top / 100% var(--box-w) repeat-y;
+  mix-blend-mode: screen;
+  /* It pours out of the dark at the top and is lost in the spray at the bottom */
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 80%, transparent);
+  animation: fall 3s linear infinite;
+}
+.about-pool {
+  left: 0;
+  right: 0;
+  bottom: 12%;
+  height: 22%;
+  background: radial-gradient(ellipse 35% 60% at 18% 30%, rgb(196 18 28 / 0.25), transparent 70%);
+}
+.about-mist {
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  height: 28%;
+  background: radial-gradient(ellipse 30% 50% at 17% 40%, rgb(120 20 24 / 0.4), transparent 70%);
+  animation: drift 26s ease-in-out infinite alternate;
+}
+.about-ground {
+  left: -5vw;
+  bottom: 8%;
+  width: 110vw;
+  aspect-ratio: 2752 / 632;
+}
+.about-rocks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* By the pool, near the falls and clear of the words */
+.about-figure {
+  position: absolute;
+  left: 30%;
+  bottom: 58%;
+  width: 9%;
+}
+.about-front {
+  left: -5vw;
+  bottom: -12%;
+  width: 110vw;
+}
+.about-copy {
+  justify-self: end;
+  width: min(32rem, 100% - 2rem);
+  margin-inline: clamp(1rem, 6vw, 6rem);
+}
+.about-text {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
+@keyframes fall {
+  to {
+    background-position-y: var(--box-w);
+  }
+}
+
 @media (max-width: 767px) {
-  .card-side {
-    display: none;
+  .topnav {
+    gap: 1rem;
   }
-  .hand-dot {
-    width: 36px;
+  .about {
+    min-height: 140svh;
+    align-items: end;
+  }
+  .about-copy {
+    justify-self: start;
+  }
+  .about-cliffbox {
+    --box-w: 140vw;
+    left: -30vw;
+    top: 4%;
+  }
+  /* The words sit over the art here, so they get a pool of shadow behind them */
+  .about-copy::before {
+    content: "";
+    position: absolute;
+    inset: -12% -10%;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgb(5 4 5 / 0.85), rgb(5 4 5 / 0.6) 60%, transparent);
+  }
+  .about-copy {
+    position: relative;
+  }
+  .about-ground,
+  .about-front {
+    left: -60vw;
+    width: 220vw;
   }
 }
 
-/* Contact: the words before the gate, the footer on the ground */
-.scene-contact {
-  min-height: 120svh;
-  padding-bottom: 0;
-  grid-template-rows: 1fr auto;
+@media (prefers-reduced-motion: reduce) {
+  .about-scene * {
+    animation: none !important;
+  }
 }
-.contact-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 1.5rem;
-  list-style: none;
+
+/* === Loader ===
+   The blade line fills; then the screen is cut along it and the halves part. */
+html[data-loading] {
+  overflow: hidden;
 }
-.contact-list a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 44px;
-  font-size: 1.2rem;
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
 }
-.contact-list a:hover {
-  color: var(--red);
-  border-bottom-color: var(--red);
+.loader-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: var(--color-void);
+  transition: translate 0.8s cubic-bezier(0.7, 0, 0.2, 1);
 }
-.contact-soon {
-  margin-top: 1.5rem;
-  font-family: var(--font-mincho);
-  font-size: 1.3rem;
+.loader-top {
+  top: 0;
 }
-.site-footer {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem 2rem;
-  margin-top: 16svh;
-  padding: 1rem var(--gutter) calc(1rem + var(--menu-bar));
+.loader-bottom {
+  bottom: 0;
+}
+.loader-blade {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 50%;
+  height: 2px;
+  transform-origin: left center;
+  background: var(--color-glow);
+  box-shadow:
+    0 0 8px var(--color-glow),
+    0 0 24px rgb(196 18 28 / 0.8);
+  transition:
+    scale 0.25s ease-out,
+    opacity 0.3s ease,
+    left 0.35s ease,
+    right 0.35s ease;
+}
+.loader-text {
+  position: absolute;
+  top: calc(50% + 1.5rem);
+  margin: 0;
+  color: var(--color-smoke);
   font-size: 0.9rem;
-  background: linear-gradient(to top, var(--bg) 50%, rgb(12 10 13 / 0));
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
 }
-
-/* The footer's control for everything that moves on its own */
-.motion-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 44px;
-  padding: 0;
-  color: var(--bone);
-  font: inherit;
-  background: transparent;
-  border: 0;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* The cut: the blade flashes across the full width, then the halves part */
+.loader[data-cut] .loader-blade {
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition-delay: 0s, 0.3s, 0s, 0s;
 }
-.motion-toggle:hover {
-  color: var(--red);
+.loader[data-cut] .loader-top {
+  translate: 0 -100%;
+  transition-delay: 0.15s;
 }
-.motion-toggle:active {
-  transform: translateY(1px);
+.loader[data-cut] .loader-bottom {
+  translate: 0 100%;
+  transition-delay: 0.15s;
 }
-.motion-glyph {
-  width: 9px;
-  height: 10px;
-  border-inline: 3px solid currentColor;
+.loader[data-cut] .loader-text {
+  opacity: 0;
 }
-.motion-glyph[data-paused="true"] {
-  border: 0;
-  border-block: 5px solid transparent;
-  border-left: 9px solid currentColor;
+@media (prefers-reduced-motion: reduce) {
+  .loader-half,
+  .loader-blade {
+    transition: opacity 0.3s ease;
+  }
+  .loader[data-cut] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .loader[data-cut] .loader-top,
+  .loader[data-cut] .loader-bottom {
+    translate: none;
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

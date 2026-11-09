@@ -1,93 +1,107 @@
 # DESIGN.md
 
-Direction for Lytcher.dev, the personal portfolio of Luthfi Dhiya.
+Direction for Lytcher.dev, the personal portfolio of Luthfi Dhiya. Version 2: a rebuild
+from scratch. What carries over from v1 is only the samurai theme, the red moon and the
+name; everything else below is new.
+
+References: `refrensi/` (two illustrated landing pages). Taken from them: scenes built
+from layered paintings that move at different depths, and sections that flow into each
+other with no visible seam. Not taken: their bright palettes.
 
 ## Identity
 
-Anime samurai at night: dark ink, one blood-red moon. The site should feel like
-the opening frames of a samurai anime, quiet and heavy, with red used only where
-a blade would catch the light.
+A samurai at night where almost nothing is lit. The page is shadow first; red is the
+only light in the world, and it decides what the eye can see. Quiet, heavy, cinematic.
 
-Dial: ENERGY 3 / RHYTHM 3 / MOTION 3
+Dial: ENERGY 2 / RHYTHM 3 / MOTION 3
+
+## Light rule
+
+Every image and every surface follows one rule: shadow is the default, red is the light.
+
+- 80 to 90 percent of each frame sits near black
+- Forms are read from red rim light only (moon behind, blade glint, embers, lanterns)
+- No white light, no blue, no daylight, no fill light. Skin and cloth stay in shadow
+  except where red catches an edge
+- Text is the only thing that is not red and not dark, so it always reads first
 
 ## Palette
 
-- `--bg` #0c0a0d: night ink, the base of every section (owner asked for a dark background)
-- `--surface` #16121a: one step up, for panels that sit on the ink
-- `--bone` #ece3d3: main text, warm like aged paper instead of pure white
-- `--ash` #a39a8c: secondary text
-- `--red` #ef3b44 (text on dark) and `--red-deep` #c8202a (fills): the single accent
-
-Red appears on: the moon-disc section marks, primary buttons, link hover, focus rings.
-Nowhere else.
+- `--void` #050405: the base of every section
+- `--shadow` #0e0a0c: one step up, for panels and the ink between layers
+- `--blood` #c4121c: red fills (buttons, the moon disc, the seal)
+- `--glow` #ff3b30: red as light (rim light, hover, focus rings, the cut). Used on text
+  only at large sizes
+- `--paper` #e6ddd0: main text
+- `--smoke` #8f877c: secondary text
 
 ## Typography
 
-- Shippori Mincho B1 for headings: a brush-like mincho that carries the Japanese tone
-- Outfit for body: a plain geometric sans that stays readable next to the ornate mincho
+- Zen Antique for headings: a heavy old-style mincho with real ink weight, so a title
+  holds its own against a near-black painting
+- Hanken Grotesk for body: plain and narrow enough to sit in the dark gaps of a scene
 
-## Motif
+## Copy
 
-A red disc with a kanji numeral inside (壱 弐 参 肆), echoing the red moon that
-appears in every illustration. Used as section marks and in the logo.
-
+Until the owner writes the real text, the site uses template copy. Every template line is
+marked `[TEMPLATE]` in `src/data/` so it cannot ship as if it were final. Facts that are
+already real (name, role, location, the tools list) stay as they are.
 
 ## Structure
 
-One continuous descent through a painted night, in the spirit of an illustrated game
-landing page: each section is a scene, joined to the next by ink at the edges. Titles
-sit on the left (or wherever the painting leaves sky), with a small kanji kicker above.
+Five scenes, one continuous descent through the night. Each scene has its own composition,
+so no two sections share a layout.
 
-- **The peak (hero)**: pinned while the visitor scrolls. A living sky (blood moon, snow
-  peak, pagoda) behind the name; the ronin on his rock in the right third. Scrolling plays
-  his kata key frame by key frame and ends in the cut, which splits the world.
-- **About, "Stillness"**: the falls. The ronin kneels by the pool; the words take the sky.
-- **Arsenal, "Steel"**: the bamboo grove with the crouching shinobi; tools on a rack.
-- **Work, "Kata"**: the dojo. Projects are a hand of cards: the chosen one face up, its
-  neighbours face down (crossed blades over the moon), turned over when picked.
-- **Contact, "The gate"**: travellers walking to a torii under the moon; footer with the
-  motion control.
+| # | Section | Scene | Composition |
+|---|---|---|---|
+| 1 | Hero | The samurai under the red moon | Close-up: samurai from the waist up fills the right half, cut off by the right and bottom edges. Name on the left. Scrolling plays his draw and cut |
+| 2 | About | The falls | Wide: a tiny lone figure by a waterfall that glows red from the moon. Words take the dark sky |
+| 3 | Arsenal | The weapon rack | Object close-up: blades on a rack, each edge catching red. The tools list sits beside it like an inventory |
+| 4 | Work | The dojo | Interior: lantern-lit floor, projects as a hand of cards turned over when picked |
+| 5 | Contact | The gate | A torii against the moon, the samurai walking toward it from behind. Footer below |
 
-Navigation: a quiet top bar (mark left, four stops right, Contact outlined); on phones the
-stops move to a bar along the bottom.
+Navigation: mark left, four stops right, Contact outlined. On phones the stops move to a
+bar along the bottom.
 
-## The ronin
+## Seamless descent
 
-Six key frames generated in one Gemini conversation so the character stays the same
-(stand, grip and draw, nukitsuke, blade up, raised, the cut), each on a flat chroma green,
-keyed out and cropped to one shared box so they swap in place. Scroll moves through them
-anime-style: each frame is mostly held, with a short blend and a directional smear
-between; the cut adds a flash and a camera shake. He is darkened against the bright sky,
-rimmed in red, and stands in a red aura that breathes and swells as he gathers himself.
-The cut's line leaves his blade tip along the red arc in the cut frame.
+No section ever ends in a flat band of black. Between two scenes:
+
+1. **Overlap**: the next scene's back layer is already in place behind the current one,
+   and the two crossfade with scroll
+2. **Foreground sweep**: the current scene's front layer (grass, rock, beam) rises faster
+   than the rest and wipes across the screen, revealing the next scene behind it
+3. **One atmosphere**: embers and drifting smoke run across every boundary in a single
+   fixed layer
+4. **Matched edges in the art**: every painting ends at the bottom in dark ground or mist,
+   and starts at the top in dark sky, at the same value as its neighbours
+
+Scrolling is smoothed (Lenis) so the layers glide instead of stepping.
+
+## The samurai
+
+One character design, made fresh for v2 (the v1 ronin is not reused): wide straw hat,
+dark kimono, long red scarf, face lost in the hat's shadow.
+
+The hero animation is a scroll-scrubbed image sequence: a Veo clip of the draw and cut,
+48 to 60 frames, keyed and drawn to a canvas. The hero is pinned for 120 to 150svh, so a
+new frame arrives every 15 to 25px of scroll.
 
 ## Imagery
 
-Generated art (personal use): Magnific (Freepik) free plan for the sky and the falls,
-Gemini (Nano Banana / Veo) for everything else. Sources live in `assets-src/ai/`
-(gitignored); web versions in `public/art/`, made by a PIL script (crop the Gemini mark,
-key the green, WebP in two sizes).
-
-| File | Scene | Source |
-|---|---|---|
-| sky, hero-sky.mp4 | The peak | Magnific image, animated with Veo |
-| ronin-0..5 | The peak | Gemini, chroma key |
-| about | About | Magnific |
-| arsenal, work, contact | Arsenal, Work, Contact | Gemini, style-matched to the about image |
+Generated art (personal use). Sources in `assets-src/<scene>/`, committed so they move between
+devices, prompts in
+`ART.md`, web versions in `public/art/`. Each scene is built from components, one image
+per element (moon, clouds, each ridge, figure, foreground), assembled in code so every
+element moves at its own depth. Solid components are generated on flat chroma green and
+keyed; glowing ones on black and blended. Light itself (sky gradient, glow, mist, shafts,
+embers) is made in code, not painted.
 
 ## Motion
 
-- **Scroll as camera** (reverses on scroll up): the name recedes into depth and blur, the
-  sky reddens and presses closer, the kata plays, the world splits along the cut
-- **Living paintings** (WebGL cinemagraph, `LivingPainting.tsx`): only chosen regions
-  move. The falls stream and the pool ripples; bamboo and grass bend in the wind while the
-  figures hold still; lanterns flicker; the moon breathes; mist drifts; embers rise and
-  fireflies wander. Runs only while its scene is on screen
-- **Living sky**: a looping Veo clip over the still sky painting, both halves kept on the
-  same frame so the cut line never shows two moments
-- **Atmosphere** (WebGL): embers and ash blown by scrolling and pushed by the cursor
-- **Pointer**: on the title, sky and ronin shift against the cursor by different amounts
-- Cards turn over (rotateY) when a project is picked
-- Everything that moves on its own (sky clip, paintings, aura, embers) stops with the
-  footer's "Pause motion". Under `prefers-reduced-motion` none of it starts, nothing is
-  scrubbed or pinned, and every scene is its still painting
+- Layers move against the scroll at different speeds (far slow, near fast)
+- Small living details only where they make sense: the falls run, lanterns flicker,
+  the scarf moves, embers rise
+- Text enters with a short fade and rise, once
+- Pause motion control in the footer. Under `prefers-reduced-motion`, nothing is pinned
+  or scrubbed, and every scene is its still painting
