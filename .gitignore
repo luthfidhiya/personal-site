@@ -28,6 +28,5 @@ assets-src/
 
 # Local-only
 *.tsbuildinfo
-refrensi/
 archive/
 .claude/settings.local.json
